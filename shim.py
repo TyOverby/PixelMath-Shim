@@ -117,7 +117,8 @@ for blankPix in blank.eachPixel():
         blankPix.setColor(picture.getColor(modPos))
 
 blank.refresh()
-
+#                           k     k                      v     v
+# Source1((x-(xmax/2)+(xmax/2)/2)*2,   (y-(ymax/2)+(ymax/2)/2)*2)
 
 
 # Example of lambda select
