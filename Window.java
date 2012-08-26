@@ -41,6 +41,14 @@ public class Window{
         return new Vec2(pm.getImageWidth(this.id),pm.getImageHeight(this.id));
     }
 
+    public int getWidth(){
+        return pm.getImageWidth(this.id);
+    }
+
+    public int getHeight(){
+        return pm.getImageHeight(this.id);
+    }
+
     public void refresh(){
         pm.refresh(this.id);
     }
