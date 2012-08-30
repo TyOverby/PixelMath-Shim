@@ -1,4 +1,6 @@
 public class Vec2{
+    public static final Vec2 tysMonitor = new Vec2(1280,800);
+
     public float x;
     public float y;
 
@@ -86,5 +88,11 @@ public class Vec2{
         }
 
         return (float) theta;
+    }
+
+    public float distance(Vec2 other){
+        float dx = other.x - this.x;
+        float dy = other.y - this.y;
+        return (float) Math.sqrt(dx*dx+dy*dy);
     }
 }

@@ -1,0 +1,7 @@
+
+BEGIN FORMULA BARS
+0#|#3d#|#512,256#|#*,*#|#(sqr(x-256)+sqr(y-128))/100#|#c#|##|#
+1#|#KOALA#|##|#*,*#|#@C:\Users\Public\Pictures\Sample Pictures\Koala.jpg#|#c#|##|#
+2#|#noise#|#256,256#|#1,*#|#RGB(Red1(x,y) mod 2 * 256,Green1(x,y) mod 2 * 256,Blue1(x,y) mod 2 * 256)#|#c#|##|#
+2#|#noise#|##|#2,*#|#(Red1(x,y)+Green1(x,y)+Blue1(x,y))/3#|#c#|##|#
+3#|#final#|#512,256#|#0,2#|#if x<250*(1/(1+800/(100+source1(x,y)))) then source2(x,y mod h2) else dest(x-250*(1/(1+800/(100+source1(x,y)))),y)#|#c#|##|#
