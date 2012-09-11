@@ -196,7 +196,10 @@ game_master = Game_Master()
 game_master.setup_pixies(0)
 game_master.setup_pixies(1)
 
-print game_master.team_arrays[0][0]
+for round in range(6):
+    print BattleFrame.getResults(true, game_master.team_arrays[0], game_master.team_arrays[1])
+
+#print game_master.team_arrays[0][0]
 
 game_master.draw_pixies(game_master.team0)
 game_master.draw_pixies(game_master.team1)
