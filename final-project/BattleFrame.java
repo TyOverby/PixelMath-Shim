@@ -85,7 +85,7 @@ public class BattleFrame extends JFrame {
 
 		int count1 = 0;
 		for(Color color:this.team1Colors){
-			final JButton button = new JButton("");
+			final JButton button = new JButton(""+count1);
 			team1Buttons.add(button);
 			button.setBounds(20,60+25*count1,100,20);
 			button.setBackground(color);
@@ -96,7 +96,7 @@ public class BattleFrame extends JFrame {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					BattleFrame.this.team1Chosen = button.getBackground();
-                    BattleFrame.this.team1ChosenIndex = (int) button.getText().charAt(1);
+                    BattleFrame.this.team1ChosenIndex = Integer.parseInt(button.getText());
 					if(BattleFrame.this.whichTeam){
 						displayPanel.setBackground(button.getBackground());
 						for(JButton b:team1Buttons){
@@ -117,7 +117,7 @@ public class BattleFrame extends JFrame {
 
 		int count2 = 0;
 		for(Color color:this.team2Colors){
-			final JButton button = new JButton(""+(char)count2);
+			final JButton button = new JButton(""+count2);
 			team2Buttons.add(button);
 			button.setBounds(450-20-100,60+25*count2,100,20);
 			button.setBackground(color);
@@ -127,7 +127,7 @@ public class BattleFrame extends JFrame {
 			}
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-                    BattleFrame.this.team2ChosenIndex = (int) button.getText().charAt(1);
+                    BattleFrame.this.team2ChosenIndex = Integer.parseInt(button.getText());
 					BattleFrame.this.team2Chosen = button.getBackground();
 					if(!BattleFrame.this.whichTeam){
 						displayPanel.setBackground(button.getBackground());

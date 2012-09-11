@@ -196,14 +196,14 @@ game_master = Game_Master()
 game_master.setup_pixies(0)
 game_master.setup_pixies(1)
 
-for round in range(6):
-    print BattleFrame.getResults(true, game_master.team_arrays[0], game_master.team_arrays[1])
-
-#print game_master.team_arrays[0][0]
-
 game_master.draw_pixies(game_master.team0)
 game_master.draw_pixies(game_master.team1)
-game_master.team0[0].select(game_master)
-game_master.team1[0].select(game_master)
-game_master.battlepixie0[0].tween()
-game_master.battlepixie1[0].tween()
+
+for round in range(1):
+    t0s, t1s = BattleFrame.getResults(True, game_master.team_arrays[0], game_master.team_arrays[1])
+    print t0s, t1s
+    
+    game_master.team0[t0s].select(game_master)
+    game_master.team1[t1s].select(game_master)
+    game_master.battlepixie0[t0s].tween()
+    game_master.battlepixie1[t1s].tween()
