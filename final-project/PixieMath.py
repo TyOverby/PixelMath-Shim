@@ -205,7 +205,6 @@ game_master.draw_pixies(game_master.team1)
 
 for round in range(3):
     t0s, t1s = BattleFrame.getResults(True, game_master.team_arrays[0], game_master.team_arrays[1])
-    print t0s, t1s
     
     game_master.team0[t0s].select(game_master)
     game_master.team1[t1s].select(game_master)
@@ -216,6 +215,10 @@ for round in range(3):
 
     game_master.battlepixie0[round].tween()
     game_master.battlepixie1[round].tween()
+
+    color0 = game_master.battlepixie0[round].get_color()
+    color1 = game_master.battlepixie1[round].get_color() 
+    print color0, color1
 
     
 
