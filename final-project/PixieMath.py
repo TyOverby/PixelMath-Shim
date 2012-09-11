@@ -1,95 +1,206 @@
 from jarray import array
 import java.awt.Color as Color
+import BattleFrame
+import SetupFrame
 
-class game_master:
+class Game_Master:
 
-   parent_pixie = 0 #Holds the window number of the base pixie image.
-   team1 = []
-   team2 = []
+   parent_pixie = 1 #Holds the window number of the base pixie image.
+   team_arrays = []
+   team0 = [] #Holds player 1's pixie instances
+   team1 = [] #Holds player 2's pixie instances
+   battlepixie0 = [] #Holds player 1's selected pixie
+   battlepixie1 = [] #Holds player 2's selected pixie
 
-   def __init__():
-      pmOpenImage(1, "pixie.png") #Opens up base pixie image and moves off of screen.
-      self.parent_pixie = 1
+   def __init__(self):
+      self.parent_pixie = pmOpenImage(0, "pixie.png") #Opens up a 'parent' pixie image for PixelMath to reference
       screensize= pmGetScreenSize()
-      pmPositionWindow(parent_pixie, screensize[0],screensize[1],0,0)
+      pmPositionWindow(self.parent_pixie, screensize[0],screensize[1],0,0)
 
    def get_parent_pixie(self):
       return int(self.parent_pixie)
 
 
-   def setup_pixies(self, player, color): #Takes an array of colors and a player number,  
-      screensize= pmGetScreenSize()#Then creates new pixies.
-      
-      if player == 1:
+   def setup_pixies(self, player): #Takes an array of colors from the SteupFrame and creates pixie objects for each team.  
+      team_array = SetupFrame.getTeamColors(player)
+      self.team_arrays.append(team_array)
+      for index, i in enumerate(team_array):
+         red = int(i.getRed())
+         green = int(i.getGreen())
+         blue = int(i.getBlue())
+         color = (red, green, blue)
 
-               
+         pixie = Pixie(self,color, player, (index+1))
+         
+         if player == 0:
+            self.team0.append(pixie)
 
-   def create_pixie(self, player, pixienum, color):
-      pixiename = "Pixie " + str(pixienum)
-      window = windownum
-      formula = ("if s1(x,y) = 1 then (s1(x,y)*"+str(color)+") else s1(x,y)")
-      pmNewComputedImage(window, pixiename,  pmGetImageWidth(self.parent_pixie), pmGetImageHeight(parent_pixie), formula)     
+         elif player == 1:
+            self.team1.append(pixie)
 
-class pixie:
+   def draw_pixies(self, team):
+      for i in team:
+         i.draw()
+         i.tween()
+
+   def get_team(self, team):
+      if team == 0:
+         return self.team0
+      elif team == 1:
+         return self.team1
+      else:
+         return self.team0
+         print "ERROR INVALID TEAM NUMBER"               
+
+
+class Pixie:
 
    color = (0,0,0)
    team = 0 #Team 0 = Player 1, Team 1 = Player 2
-   pixie_num = 0
-   window = 0
-   x_pos = 0
+   pixienum = 0 #The pixie's position (1-6)in the team
+   window = 0 #The PixelMath window number of the pixie.
+   x_pos = 0 #Screen position coordinates of this pixie
    y_pos = 0
+   x_target = 0
+   y_target = 0
+   x_home = 0
+   y_home = 0
 
-   parent_pixie_w = pmGetImageWidth(game_master.get_parent_pixie())
-   parent_pixie_h = pmGetImageHeight(game_master.get_parent_pixie())
+   speed = 5
+   parent_pixie_w = 128
+   parent_pixie_h = 100
+   drawn = False #Has this pixie been drawn before?
+   windowsize = (0,0)
+
+ 
 
 
-   def __init__(color, team, pixienum, window):
+   def __init__(self, game_master, color, team, pixienum):
       self.color = color
       self.team = team
-      self.pixie_num = pixie_num
-      self.window = window
+      self.pixienum = pixienum
+      self.window = 0
       screensize = pmGetScreenSize()
+      self.windowsize = pmGetWindowSize(game_master.get_parent_pixie())
+      parent_pixie_w = pmGetImageWidth(game_master.get_parent_pixie())
+      parent_pixie_h = pmGetImageHeight(game_master.get_parent_pixie())
+
+      if team == 0: #Sets up screen positions of each pixie so they appear in appropriate screen locations.
+
+         if pixienum % 2 == 0:
+            self.x_pos = 0+self.windowsize[0]
+         else:
+            self.x_pos = 0
+
+      if team == 1:
+
+         if pixienum % 2 == 0:
+            self.x_pos = (screensize[0]- self.windowsize[0])
+         else:
+            self.x_pos = (screensize[0] - 2*self.windowsize[0])
+
+      if team == 0:
+
+         if pixienum <= 2:
+            self.y_pos = (0)
+         elif pixienum <= 4:
+            self.y_pos = (1*self.windowsize[1])
+         else:
+            self.y_pos = (2*self.windowsize[1])
+
+      if team == 1:
+
+         if pixienum <= 2:
+            self.y_pos = (0)
+         elif pixienum <= 4:
+            self.y_pos = (1*self.windowsize[1])
+         else:
+            self.y_pos = (2*self.windowsize[1])
+
+      self.x_target = self.x_pos
+      self.y_target = self.y_pos
+
+   def get_color(self):
+      return self.color
+
+   def get_window(self): 
+      return self.window
+
+   def position(self): #Update the position of the Pixie's window.
+      pmPositionWindow(self.window, self.x_target, self.y_target, 0, 0)
+      print self.pixienum, self.x_pos, self.y_pos 
+
+   def draw(self): #Tells pixel math to render the pixie's image.
+      if self.drawn == True:
+         pmClose(self.window)
+      pixiename = "Pixie " + str(self.pixienum)
+      formula = ("if s1(x,y) = 128 then RGB("+str(self.color[0])+","+str(self.color[1])+","+str(self.color[2])+") else s1(x,y)")
+      self.window = pmNewComputedImage(pixiename, self.parent_pixie_w, self.parent_pixie_h, formula)
+      if not self.drawn:
+         self.drawn = True
+
+   def select(self, gamemaster): #Select this pixie for battle
+      if self.team == 0:
+         gamemaster.battlepixie0.append(self)
+         self.x_home = self.x_pos
+         self.y_home = self.y_pos
+         self.x_target = pmGetScreenSize()[0]/2  - (self.windowsize[0])
+         self.y_target = pmGetScreenSize()[1]/2 - self.windowsize[1]
+
+      if self.team == 1:
+         gamemaster.battlepixie1.append(self)
+         self.x_home = self.x_pos
+         self.y_home = self.y_pos
+         self.x_target = (pmGetScreenSize()[0]/2)
+         self.y_target = (pmGetScreenSize()[1]/2) - self.windowsize[1]
+
+   def tween(self): #Tweens to current x and y pos.
+      x_dist = self.x_target - self.x_pos
+      y_dist = self.y_target - self.y_pos
+      x_reached = False
+      y_reached = False
+
+      while not x_reached or not y_reached:
+
+         if not x_reached:
+            x_dist = self.x_target - self.x_pos
+            if x_dist == 0:
+               x_reached = True
+            elif abs(x_dist)< self.speed:
+               self.x_pos = self.x_target
+               x_reached = True
+
+            if x_dist > 0:
+               self.x_pos += self.speed
+            elif x_dist < 0:
+               self.x_pos -= self.speed
+
+         if not y_reached:
+            y_dist = self.y_target - self.y_pos
+            if y_dist == 0:
+               y_reached = True
+            elif abs(y_dist)< self.speed:
+               self.y_pos = self.y_target
+               y_reached = True
+
+            if y_dist > 0:
+               self.y_pos += self.speed
+            elif y_dist < 0:
+               self.y_pos -= self.speed
+
+         pmPositionWindow(self.window, self.x_pos, self.y_pos, 0, 0) 
       
 
-      if team == 0:
-         self.window = 1 + int(pixie_num) #Plus one because window 1 is the parent pixie.
+game_master = Game_Master()
 
-         if pixienum < 3:
-            self.x_pos = (screensize[0]/2 + (2*self.parent_pixie_w)
-         else:
-            self.x_pos = (screensize[0]/2 + (1*self.parent_pixie_w)
+game_master.setup_pixies(0)
+game_master.setup_pixies(1)
 
-      if team == 1:
-         self.window = 1 + int(pixie_num) + 6
+print game_master.team_arrays[0][0]
 
-         if pixienum < 3:
-            self.x_pos = (screensize[0]/2 - (2*self.parent_pixie_w)
-         else:
-            self.x_pos = (screensize[0]/2 - (1*self.parent_pixie_w)
-
-      if team == 0:
-
-         if pixienum =< 2:
-            self.y_pos = (screensize[1] - (2*self.parent_pixie_h)
-         elif pixienum =< 4:
-            self.y_pos = (screensize[1] - (1*self.parent_pixie_h)
-         else:
-            self.y_pos = (screensize[1] - (0*self.parent_pixie_h)
-
-      if team == 1:
-
-         if pixienum =< 2:
-            self.y_pos = (screensize[1] - (2*self.parent_pixie_h)
-         elif pixienum =< 4:
-            self.y_pos = (screensize[1] - (1*self.parent_pixie_h)
-         else:
-            self.y_pos = (screensize[1] - (0*self.parent_pixie_h)
-
-
-   def position():
-      pmPositionWindow(self.window, self.x_pos, self.y_pos, 0, 0) 
-
-   def draw():
-      pixiename = "Pixie " + str(self.pixie_num)
-      formula = ("if s1(x,y) = 1 then (s1(x,y)*"+str(color)+") else s1(x,y)")
-      pmNewComputedImage(self.window, pixiename, self.parent_pixie_w, self.parent_pixie_h, formula)
+game_master.draw_pixies(game_master.team0)
+game_master.draw_pixies(game_master.team1)
+game_master.team0[0].select(game_master)
+game_master.team1[0].select(game_master)
+game_master.battlepixie0[0].tween()
+game_master.battlepixie1[0].tween()
