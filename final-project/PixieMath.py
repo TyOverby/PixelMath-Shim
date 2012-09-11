@@ -126,6 +126,10 @@ class Pixie:
    def get_window(self): 
       return self.window
 
+   def go_home(self):
+      pmPositionWindow(self.window, self.x_home, self.y_home, 0, 0)
+        
+
    def position(self): #Update the position of the Pixie's window.
       pmPositionWindow(self.window, self.x_target, self.y_target, 0, 0)
       print self.pixienum, self.x_pos, self.y_pos 
@@ -199,11 +203,21 @@ game_master.setup_pixies(1)
 game_master.draw_pixies(game_master.team0)
 game_master.draw_pixies(game_master.team1)
 
-for round in range(1):
+for round in range(3):
     t0s, t1s = BattleFrame.getResults(True, game_master.team_arrays[0], game_master.team_arrays[1])
     print t0s, t1s
     
     game_master.team0[t0s].select(game_master)
     game_master.team1[t1s].select(game_master)
-    game_master.battlepixie0[t0s].tween()
-    game_master.battlepixie1[t1s].tween()
+
+    if round-1>=0:
+        game_master.battlepixie0[round-1].go_home()
+        game_master.battlepixie1[round-1].go_home()
+
+    game_master.battlepixie0[round].tween()
+    game_master.battlepixie1[round].tween()
+
+    
+
+
+
