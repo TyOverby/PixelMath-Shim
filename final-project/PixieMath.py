@@ -1,7 +1,9 @@
 from jarray import array
 import java.awt.Color as Color
+import math
 import BattleFrame
 import SetupFrame
+import Logic
 
 class Game_Master:
 
@@ -119,6 +121,8 @@ class Pixie:
 
       self.x_target = self.x_pos
       self.y_target = self.y_pos
+      self.x_home   = self.x_pos
+      self.y_home   = self.y_pos
 
    def get_color(self):
       return self.color
@@ -153,8 +157,8 @@ class Pixie:
 
       if self.team == 1:
          gamemaster.battlepixie1.append(self)
-         self.x_home = self.x_pos
-         self.y_home = self.y_pos
+         #self.x_home = self.x_pos
+         #self.y_home = self.y_pos
          self.x_target = (pmGetScreenSize()[0]/2)
          self.y_target = (pmGetScreenSize()[1]/2) - self.windowsize[1]
 
@@ -203,24 +207,31 @@ game_master.setup_pixies(1)
 game_master.draw_pixies(game_master.team0)
 game_master.draw_pixies(game_master.team1)
 
-for round in range(3):
-    t0s, t1s = BattleFrame.getResults(True, game_master.team_arrays[0], game_master.team_arrays[1])
+pts0 = 0
+pts1 = 0
+
+for round in range(6*2):
+    t0s, t1s = BattleFrame.getResults(round%2==0, game_master.team_arrays[0], game_master.team_arrays[1])
     
     game_master.team0[t0s].select(game_master)
     game_master.team1[t1s].select(game_master)
 
     if round-1>=0:
-        game_master.battlepixie0[round-1].go_home()
-        game_master.battlepixie1[round-1].go_home()
+        for i in range(0,round):
+            game_master.battlepixie0[i].go_home()
+            game_master.battlepixie1[i].go_home()
 
     game_master.battlepixie0[round].tween()
     game_master.battlepixie1[round].tween()
 
     color0 = game_master.battlepixie0[round].get_color()
     color1 = game_master.battlepixie1[round].get_color() 
-    print color0, color1
+    if(round%2==0):
+        pts0 += math.floor(Logic.getPoints(color0,color1)*100)
+    else:
+        pts1 += math.floor(Logic.getPoints(color1,color0)*100)
 
-    
-
-
-
+    print "===Points==="
+    print "Team 0 points: ", int(pts0)
+    print "Team 1 points: ", int(pts1)
+    print ""
