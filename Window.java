@@ -8,7 +8,7 @@ public class Window{
         Window.pm = pm;
     }
 
-    final int id;
+    public final int id;
 
     private Window(String filename, String title, Vec2 dimensions, Color color){
         this.id = pm.newImage(0, title, (int) dimensions.x, (int) dimensions.y,
