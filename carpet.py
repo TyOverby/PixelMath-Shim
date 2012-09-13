@@ -44,7 +44,9 @@ def carpet(n):
     for x in xrange(3**n):
         for y in xrange(3**n):
             if inCarpet(x, y):
-                canvas.setColor(Vec2(x,y),Color.RED)
+                canvas.setColor(Vec2(x,y),Color.BLACK)
+            else:
+                canvas.setColor(Vec2(x,y),Color.WHITE)
     canvas.refresh()
 
 carpet(5)
