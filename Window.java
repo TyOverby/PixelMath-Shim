@@ -25,6 +25,10 @@ public class Window{
         this(null,dimensions);
     }
 
+    public Window(int id){
+        this.id = id;
+    }
+
     public static Window newBlank(Vec2 dimensions){
         return new Window(null,"Blank Window",dimensions,Color.BLACK);
     }
